@@ -1,11 +1,61 @@
-temp
+<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FloodRoute</title>
 
+  <!-- Leaflet CSS (must come before Leaflet JS) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+  <header>
+    <h1>FloodRoute</h1>
+    <p class="subtitle">Flood-aware route suggestions for Kampar, Perak</p>
+  </header>
 
-<!-- this at the bottom -->
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script src="app.js"></script>
+  <main>
+    <!-- Control panel -->
+    <aside id="panel">
+      <h2>Plan your route</h2>
+      <p id="instructions">Click the map to set your start point, then your destination.</p>
+
+      <div id="points">
+        <div>Start: <span id="origin-text">not set</span></div>
+        <div>Destination: <span id="dest-text">not set</span></div>
+      </div>
+
+      <button id="find-route-btn" disabled>Find route</button>
+      <button id="clear-btn">Clear</button>
+      <button id="report-btn">Report flood</button>
+
+      <!-- Route result / status messages show here -->
+      <div id="result" aria-live="polite"></div>
+
+      <!-- Legend -->
+      <div id="legend">
+        <h3>Legend</h3>
+        <div><span class="dot dot-met"></span> Met / official data</div>
+        <div><span class="dot dot-user"></span> User report (unverified)</div>
+        <div><span class="dot dot-verified"></span> Verified report</div>
+        <div><span class="line line-route"></span> Recommended route</div>
+        <div><span class="line line-blocked"></span> Blocked segment</div>
+      </div>
+
+      <p id="disclaimer">
+        Route suggestions are not a guarantee of safety. Conditions may change.
+        Always follow official flood warnings and road closure announcements.
+      </p>
+    </aside>
+
+    <!-- Map -->
+    <div id="map"></div>
+  </main>
+
+  <!-- Leaflet JS first, then your code -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="app.js"></script>
 </body>
+</html>

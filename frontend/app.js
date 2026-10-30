@@ -2,6 +2,9 @@
 const API = "http://localhost:5000";   // real backend (used later)
 const USE_MOCK = true;                 // set to false when the backend is ready
 
+// Free CARTO basemap key (carto.com/basemaps/apikey). This one is meant for the browser.
+const CARTO_KEY = cb1_4y6j_1_17de6837e608954b74df71d6;
+
 // Approximate centre of Kampar and the study-area bounds (adjust to your chosen roads)
 const KAMPAR_CENTER = [4.3085, 101.1530];
 const STUDY_AREA = [[4.290, 101.125], [4.335, 101.175]]; // [[south, west], [north, east]]
@@ -10,9 +13,9 @@ const STUDY_AREA = [[4.290, 101.125], [4.335, 101.175]]; // [[south, west], [nor
 const map = L.map("map").setView(KAMPAR_CENTER, 14);
 
 // NOTE: tile.openstreetmap.org shows an "Access blocked" tile if the page has no
-// valid Referer (e.g. opened from file://). CARTO tiles (built on OSM data) work
-// during development. To go back to OSM tiles, swap the URL and attribution.
-L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
+// valid Referer (e.g. opened from file://). CARTO tiles (built on OSM data) now
+// need a free key, which is appended to the URL below.
+L.tileLayer(`https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=${CARTO_KEY}`, {
   maxZoom: 19,
   subdomains: "abcd",
   referrerPolicy: "strict-origin-when-cross-origin",

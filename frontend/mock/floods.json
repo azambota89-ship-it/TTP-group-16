@@ -1,1 +1,32 @@
-
+[
+  {
+    "id": 1,
+    "lat": 4.3105,
+    "lon": 101.1490,
+    "source": "met",
+    "status": "reported",
+    "reported_at": "2026-10-30T08:00:00+08:00",
+    "description": "Flood warning area (sample)",
+    "sample": true
+  },
+  {
+    "id": 2,
+    "lat": 4.3040,
+    "lon": 101.1580,
+    "source": "user",
+    "status": "pending",
+    "reported_at": "2026-10-30T09:30:00+08:00",
+    "description": "Water over road (sample)",
+    "sample": true
+  },
+  {
+    "id": 3,
+    "lat": 4.3160,
+    "lon": 101.1620,
+    "source": "user",
+    "status": "verified",
+    "reported_at": "2026-10-30T10:15:00+08:00",
+    "description": "Road impassable (sample)",
+    "sample": true
+  }
+]

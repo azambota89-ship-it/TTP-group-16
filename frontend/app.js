@@ -3,7 +3,7 @@ const API = "http://localhost:5000";   // real backend (used later)
 const USE_MOCK = true;                 // set to false when the backend is ready
 
 // Free CARTO basemap key (carto.com/basemaps/apikey). This one is meant for the browser.
-const CARTO_KEY = cb1_4y6j_1_17de6837e608954b74df71d6;
+const CARTO_KEY = "cb1_4y6j_1_17de6837e608954b74df71d6";
 
 // Approximate centre of Kampar and the study-area bounds (adjust to your chosen roads)
 const KAMPAR_CENTER = [4.3085, 101.1530];

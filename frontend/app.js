@@ -9,9 +9,14 @@ const STUDY_AREA = [[4.290, 101.125], [4.335, 101.175]]; // [[south, west], [nor
 // ---------- Map setup ----------
 const map = L.map("map").setView(KAMPAR_CENTER, 14);
 
-L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+// NOTE: tile.openstreetmap.org shows an "Access blocked" tile if the page has no
+// valid Referer (e.g. opened from file://). CARTO tiles (built on OSM data) work
+// during development. To go back to OSM tiles, swap the URL and attribution.
+L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
   maxZoom: 19,
-  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  subdomains: "abcd",
+  referrerPolicy: "strict-origin-when-cross-origin",
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
 }).addTo(map);
 
 // Outline of the area the prototype covers
@@ -24,6 +29,7 @@ L.rectangle(STUDY_AREA, {
 
 // ---------- Flood markers ----------
 const floodLayer = L.layerGroup().addTo(map);
+let currentFloods = [];   // kept so the 3D view can draw the same data
 
 // Marker colour by source/status (matches the legend in style.css)
 function floodColor(flood) {
@@ -44,6 +50,7 @@ function floodPopup(flood) {
 }
 
 function drawFloods(floods) {
+  currentFloods = floods;
   floodLayer.clearLayers();
   floods.forEach(f => {
     L.circleMarker([f.lat, f.lon], {
@@ -69,6 +76,54 @@ async function loadFloods() {
       "Could not load flood information. Please check official sources.";
   }
 }
+
+// ---------- 2D / 3D toggle ----------
+// 2D = Leaflet (above). 3D = MapLibre GL with tilted view and 3D buildings.
+let map3d = null;
+let markers3d = [];
+let is3D = false;
+
+function draw3DFloods() {
+  if (!map3d) return;
+  markers3d.forEach(m => m.remove());
+  markers3d = currentFloods.map(f => {
+    const el = document.createElement("div");
+    el.className = "flood-marker-3d";
+    el.style.background = floodColor(f);
+    const popup = new maplibregl.Popup({ offset: 12 }).setHTML(floodPopup(f));
+    return new maplibregl.Marker({ element: el })
+      .setLngLat([f.lon, f.lat])     // MapLibre uses [lon, lat], Leaflet uses [lat, lon]
+      .setPopup(popup)
+      .addTo(map3d);
+  });
+}
+
+function init3D() {
+  map3d = new maplibregl.Map({
+    container: "map3d",
+    style: "https://tiles.openfreemap.org/styles/liberty",
+    center: [KAMPAR_CENTER[1], KAMPAR_CENTER[0]],
+    zoom: 15.5,
+    pitch: 60,
+    bearing: -20
+  });
+  map3d.addControl(new maplibregl.NavigationControl());
+  draw3DFloods();
+}
+
+document.getElementById("view-toggle-btn").addEventListener("click", () => {
+  is3D = !is3D;
+  document.getElementById("map").hidden = is3D;
+  document.getElementById("map3d").hidden = !is3D;
+  document.getElementById("view-toggle-btn").textContent = is3D ? "2D view" : "3D view";
+
+  if (is3D) {
+    if (!map3d) init3D(); else map3d.resize();
+    draw3DFloods();
+  } else {
+    map.invalidateSize();   // Leaflet needs this after being hidden
+  }
+});
 
 loadFloods();
 

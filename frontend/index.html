@@ -7,6 +7,8 @@
 
   <!-- Leaflet CSS (must come before Leaflet JS) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <!-- MapLibre CSS (for the 3D view) -->
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -30,6 +32,7 @@
       <button id="find-route-btn" disabled>Find route</button>
       <button id="clear-btn">Clear</button>
       <button id="report-btn">Report flood</button>
+      <button id="view-toggle-btn">3D view</button>
 
       <!-- Route result / status messages show here -->
       <div id="result" aria-live="polite"></div>
@@ -52,10 +55,12 @@
 
     <!-- Map -->
     <div id="map"></div>
+    <div id="map3d" hidden></div>
   </main>
 
   <!-- Leaflet JS first, then your code -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

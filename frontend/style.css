@@ -30,9 +30,19 @@ main {
 }
 
 /* The map MUST have a height or it will not show */
-#map {
+#map, #map3d {
   flex: 1;
   height: 100%;
+}
+#map[hidden], #map3d[hidden] { display: none; }
+
+.flood-marker-3d {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
 }
 
 button { margin: 4px 4px 4px 0; padding: 6px 12px; cursor: pointer; }

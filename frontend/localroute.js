@@ -12,6 +12,7 @@ const ROAD_TYPES = "motorway|trunk|primary|secondary|tertiary|unclassified|resid
 
 let rawRoadData = null;
 let graphPromise = null;
+let affectedSegments = [];   // [{name, coords: [[lat, lon], [lat, lon]]}], also drawn by view3d.js
 const affectedLayer = L.layerGroup().addTo(map);
 
 // ---------- Load road data ----------
@@ -268,12 +269,14 @@ async function refreshAffectedRoads() {
     const graph = await getGraph();
     markBlocked(graph, currentFloods);
     affectedLayer.clearLayers();
+    affectedSegments = [];
 
     const names = new Set();
     for (const s of graph.segs) {
       if (!s.blocked) continue;
       const a = graph.nodes.get(s.a), b = graph.nodes.get(s.b);
       names.add(s.name);
+      affectedSegments.push({ name: s.name, coords: [[a.lat, a.lon], [b.lat, b.lon]] });
       L.polyline([[a.lat, a.lon], [b.lat, b.lon]], { color: "#dc3545", weight: 7, opacity: 0.6 })
         .bindTooltip(`Affected road: ${s.name}`, { sticky: true })
         .addTo(affectedLayer);
@@ -281,6 +284,7 @@ async function refreshAffectedRoads() {
     affectedInfo.textContent = names.size
       ? `Roads near reported floods: ${[...names].join(", ")}`
       : "No roads currently marked as affected.";
+    if (typeof render3D === "function") render3D();   // update the 3D view too
   } catch (err) {
     console.warn("Could not mark affected roads:", err);
     affectedInfo.textContent = "";

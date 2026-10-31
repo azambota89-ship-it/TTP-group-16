@@ -118,8 +118,15 @@ async function findRoute(forceNoRoute) {
   try {
     let data;
     if (USE_MOCK) {
-      await new Promise(r => setTimeout(r, 400));          // pretend it takes a moment
-      data = mockRoute(origin, destination, forceNoRoute);
+      if (forceNoRoute) {
+        data = mockRoute(origin, destination, true);       // Shift+click test of the no-route message
+      } else if (typeof localRoute === "function") {
+        setResult("Loading road data and finding route...", "info");
+        data = await localRoute(origin, destination);      // real roads, calculated in the browser (localroute.js)
+      } else {
+        await new Promise(r => setTimeout(r, 400));       // old fake route if localroute.js is not loaded
+        data = mockRoute(origin, destination, false);
+      }
     } else {
       const res = await fetch(`${API}/route`, {
         method: "POST",
@@ -145,14 +152,24 @@ function showRoute(data) {
   routeLayer.clearLayers();
 
   if (data.status !== "ok" || !data.path || data.path.length < 2) {
-    setResult("No alternative route was found with the available data. Do not assume any route is safe; check official announcements.", "warning");
+    const msg = data.reason === "far_from_road"
+      ? "One of your points is too far from a mapped road. Move the marker closer to a road."
+      : "No alternative route was found with the available data. Do not assume any route is safe; check official announcements.";
+    setResult(msg, "warning");
     return;
+  }
+
+  // The usual route (grey dashed) is shown only when a flood forced a change
+  if (data.preferred_path) {
+    L.polyline(data.preferred_path, { color: "#6c757d", weight: 5, dashArray: "4 8" })
+      .bindTooltip("Usual route (passes a reported flood)")
+      .addTo(routeLayer);
   }
 
   const line = L.polyline(data.path, { color: "#198754", weight: 6, opacity: 0.85 }).addTo(routeLayer);
 
   (data.blocked_segments || []).forEach(seg => {
-    L.polyline(seg, { color: "#dc3545", weight: 6, dashArray: "8 8" })
+    L.polyline(seg, { color: "#dc3545", weight: 7, dashArray: "8 8" })
       .bindTooltip("Avoided: reported flood")
       .addTo(routeLayer);
   });
@@ -160,8 +177,14 @@ function showRoute(data) {
   map.fitBounds(line.getBounds(), { padding: [40, 40] });
 
   const km = (data.distance / 1000).toFixed(2);
-  const sampleNote = USE_MOCK ? " (sample route for testing)" : "";
-  setResult(`Route found: ${km} km${sampleNote}. This is a suggestion only. Conditions may change, so follow official warnings.`, "success");
+  const note = data.note || (USE_MOCK ? "sample route for testing" : "");
+  const noteText = note ? ` (${note})` : "";
+  const roads = (data.blocked_roads || []).join(", ") || "a road near a reported flood";
+
+  const msg = data.rerouted
+    ? `Your usual route passes a reported flood on ${roads}. Alternative route: ${km} km${noteText}.`
+    : `Route found: ${km} km${noteText}. No reported flood on this route.`;
+  setResult(`${msg} This is a suggestion only. Conditions may change, so follow official warnings.`, data.rerouted ? "warning" : "success");
 }
 
 // Shift+click on "Find route" tests the no-route message while using mock data

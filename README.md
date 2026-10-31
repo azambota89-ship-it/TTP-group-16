@@ -7,3 +7,7 @@ Repo for Flood TTp project
   "path": [[lat, lon], ...],
   "distance": 1234,
   "blocked_segments": [ [[lat, lon], [lat, lon]], ... ] }
+
+
+for azam backend:
+POST /reports takes {lat, lon, type, road_name, description}. The server should set reported_at, status: "pending" and source: "user" itself, and never trust the browser for those.

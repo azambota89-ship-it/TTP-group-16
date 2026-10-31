@@ -41,14 +41,19 @@ function floodColor(flood) {
   return "#0d6efd";                                    // met / official data
 }
 
+function esc(s) {
+  return String(s ?? "").replace(/[&<>"']/g, c =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
 function floodPopup(flood) {
   const when = new Date(flood.reported_at).toLocaleString("en-MY");
   const sample = flood.sample ? "<br><em>Sample data, not a live report</em>" : "";
   return `
-    <strong>${flood.description || "Reported flood"}</strong><br>
-    Source: ${flood.source}<br>
-    Status: ${flood.status}<br>
-    Reported: ${when}${sample}
+    <strong>${esc(flood.description) || "Reported flood"}</strong><br>
+    Source: ${esc(flood.source)}<br>
+    Status: ${esc(flood.status)}<br>
+    Reported: ${esc(when)}${sample}
   `;
 }
 

@@ -67,6 +67,7 @@ function setPoint(which, latlng) {
 
 // ---------- Click on map to pick points ----------
 map.on("click", e => {
+  if (typeof reportMode !== "undefined" && reportMode) return;   // report.js is using the click
   if (!origin) setPoint("origin", e.latlng);
   else if (!destination) setPoint("destination", e.latlng);
   else setResult("Both points are set. Drag a marker to move it, or press Clear to start over.", "info");

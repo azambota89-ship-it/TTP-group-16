@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>FloodRoute Admin</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+  <header>
+    <div>
+      <h1>FloodRoute Admin</h1>
+      <p class="subtitle">Review and manage flood reports</p>
+    </div>
+    <div id="session" hidden>
+      <span id="whoami"></span>
+      <button id="logout-btn" type="button">Log out</button>
+    </div>
+  </header>
+
+  <!-- Login -->
+  <main id="login-view">
+    <form id="login-form">
+      <h2>Admin login</h2>
+      <label>Username
+        <input id="username" name="username" autocomplete="username" required>
+      </label>
+      <label>Password
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
+      </label>
+      <button id="login-btn" type="submit">Log in</button>
+      <p id="login-error" role="alert"></p>
+      <p id="login-hint" hidden></p>
+      <p><a href="index.html">Back to the map</a></p>
+    </form>
+  </main>
+
+  <!-- Dashboard -->
+  <main id="dashboard-view" hidden>
+    <section id="list-pane">
+      <div id="toolbar">
+        <div id="filters"></div>
+        <button id="refresh-btn" type="button">Refresh</button>
+      </div>
+      <div id="status-msg" role="status"></div>
+      <div id="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th><th>Reported</th><th>Source</th><th>Details</th><th>Status</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="report-rows"></tbody>
+        </table>
+        <p id="empty-msg" hidden>No reports in this view.</p>
+      </div>
+    </section>
+    <section id="map-pane">
+      <div id="admin-map"></div>
+    </section>
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

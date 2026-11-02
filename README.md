@@ -13,3 +13,11 @@ downloaded roads.json in mock cuz overpass server is slow
 
 for azam backend:
 POST /reports takes {lat, lon, type, road_name, description}. The server should set reported_at, status: "pending" and source: "user" itself, and never trust the browser for those.
+
+
+admin :
+Endpoint	                        Purpose
+POST /admin/login	        = takes {username, password}, returns {token, username}, or 401 when wrong
+GET /admin/reports	      = all reports, every status, including type and road_name
+PATCH /admin/reports/:id	= takes {status}, where status is verified, rejected, expired or pending
+DELETE /admin/reports/:id	= deletes a report

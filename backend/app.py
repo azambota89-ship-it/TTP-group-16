@@ -1,7 +1,7 @@
 """Flood route backend (Flask + SQLite).
 
 Run:  python app.py            (http://localhost:5000)
-See the "Backend" section of the project README for setup and endpoints.
+See backend/README.md for setup and endpoints.
 """
 import math
 import os
